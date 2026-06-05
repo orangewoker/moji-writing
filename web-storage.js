@@ -2,11 +2,19 @@
   if (window.mojiStorage) return;
 
   async function requestJson(url, options = {}) {
+    const token = window.mojiAuth?.getToken?.() || localStorage.getItem("mojiWritingAuthToken") || "";
+    const headers = { "content-type": "application/json", ...(options.headers || {}) };
+    if (token) headers.authorization = `Bearer ${token}`;
     const response = await fetch(url, {
-      headers: { "content-type": "application/json", ...(options.headers || {}) },
       ...options,
+      headers,
     });
     const payload = await response.json().catch(() => ({}));
+    if (response.status === 401 && payload.authRequired) {
+      window.mojiAuth?.clearToken?.();
+      location.reload();
+      throw new Error("请先登录");
+    }
     if (!response.ok || payload.ok === false) {
       throw new Error(payload.error || `请求失败：${response.status}`);
     }

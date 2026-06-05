@@ -4430,6 +4430,9 @@ function bindEvents() {
 async function initializeApp() {
   document.body.classList.remove("resizing-right");
   document.body.classList.remove("dragging");
+  if (window.mojiAuth?.ensureAuthenticated) {
+    await window.mojiAuth.ensureAuthenticated();
+  }
   setupSectionToggles();
   renderIcons();
   await loadWorkspaceFromDataDir();
