@@ -9,12 +9,7 @@ ENV NODE_ENV=production \
 COPY index.html styles.css app.js web-storage.js server.py VERSION ./
 COPY assets ./assets
 
-RUN mkdir -p /data \
-  && groupadd --system moji \
-  && useradd --system --gid moji --home-dir /app moji \
-  && chown -R moji:moji /app /data
-
-USER moji
+RUN mkdir -p /data
 
 EXPOSE 8080
 VOLUME ["/data"]

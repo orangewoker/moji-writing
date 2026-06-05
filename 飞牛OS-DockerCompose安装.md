@@ -41,8 +41,9 @@ name: moji-writing
 
 services:
   moji-writing-workbench:
-    image: ghcr.io/orangewoker/moji-writing:0.1.17
+    image: ghcr.io/orangewoker/moji-writing:0.1.18
     container_name: moji-writing-workbench
+    user: "0:0"
     restart: unless-stopped
     ports:
       - "8088:8080"
@@ -84,13 +85,13 @@ http://飞牛OS的IP:8088
 如果 Docker Desktop 已启动，可以在项目目录执行：
 
 ```powershell
-docker build -t ghcr.io/orangewoker/moji-writing:0.1.16 .
+docker build -t ghcr.io/orangewoker/moji-writing:0.1.18 .
 ```
 
 本地测试：
 
 ```powershell
-docker run --rm -p 8088:8080 -v "${PWD}/moji-data:/data" ghcr.io/orangewoker/moji-writing:0.1.16
+docker run --rm -p 8088:8080 -v "${PWD}/moji-data:/data" ghcr.io/orangewoker/moji-writing:0.1.18
 ```
 
 访问：
@@ -116,7 +117,7 @@ git push -u origin main
 
 ```text
 ghcr.io/orangewoker/moji-writing:latest
-ghcr.io/orangewoker/moji-writing:0.1.16
+ghcr.io/orangewoker/moji-writing:0.1.18
 ```
 
 如果镜像是私有包，飞牛 OS 拉取前需要登录 GHCR：
@@ -145,5 +146,6 @@ write:packages
 
 - Docker Web 版没有 Electron 的系统目录选择弹窗。
 - Web 版会自动把数据保存到映射的 `/data/moji-workspace.json`。
+- 如果旧版本出现 `Permission denied: /data/moji-workspace.json`，请更新到 `0.1.18` 或 `latest`，并保留 compose 里的 `user: "0:0"`。
 - 不要把 `/data` 映射到临时目录。
 - 更新镜像前，建议先备份映射目录里的 `moji-workspace.json`。

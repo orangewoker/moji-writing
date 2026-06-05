@@ -2,8 +2,9 @@ name: moji-writing
 
 services:
   moji-writing-workbench:
-    image: ghcr.io/orangewoker/moji-writing:0.1.17
+    image: ghcr.io/orangewoker/moji-writing:0.1.18
     container_name: moji-writing-workbench
+    user: "0:0"
     restart: unless-stopped
     ports:
       - "8088:8080"
