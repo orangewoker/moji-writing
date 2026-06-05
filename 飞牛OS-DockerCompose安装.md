@@ -36,12 +36,12 @@
 
 把下面内容保存为 `docker-compose.yml`。
 
-把 `YOUR_GITHUB_USERNAME` 改成你的 GitHub 用户名或组织名。
-
 ```yaml
+name: moji-writing
+
 services:
   moji-writing-workbench:
-    image: ghcr.io/orangewoker/moji-writing:0.1.16
+    image: ghcr.io/orangewoker/moji-writing:0.1.17
     container_name: moji-writing-workbench
     restart: unless-stopped
     ports:
@@ -71,11 +71,9 @@ http://飞牛OS的IP:8088
 
 3. 粘贴上面的 `docker-compose.yml`。
 
-4. 修改镜像地址里的 `YOUR_GITHUB_USERNAME`。
+4. 部署并启动。
 
-5. 部署并启动。
-
-6. 浏览器打开：
+5. 浏览器打开：
 
 ```text
 http://飞牛OS的IP:8088

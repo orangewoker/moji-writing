@@ -1,6 +1,8 @@
+name: moji-writing
+
 services:
   moji-writing-workbench:
-    image: ghcr.io/orangewoker/moji-writing:0.1.16
+    image: ghcr.io/orangewoker/moji-writing:0.1.17
     container_name: moji-writing-workbench
     restart: unless-stopped
     ports:
