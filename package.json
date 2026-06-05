@@ -1,0 +1,35 @@
+{
+  "name": "moji-writing-workbench",
+  "version": "1.0.0",
+  "description": "墨迹写作台便携版",
+  "author": "HUIHUI",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "cn.moji.writing.workbench",
+    "productName": "墨迹写作台",
+    "artifactName": "墨迹写作台1.0.exe",
+    "files": [
+      "index.html",
+      "styles.css",
+      "app.js",
+      "main.js",
+      "preload.js",
+      "VERSION",
+      "assets/**/*"
+    ],
+    "win": {
+      "icon": "assets/app-icon.ico",
+      "target": [
+        "portable"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  }
+}

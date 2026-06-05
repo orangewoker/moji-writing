@@ -1,0 +1,10 @@
+.git
+.run
+dist
+node_modules
+npm-debug.log
+*.exe
+*.zip
+*.7z
+*.bak
+moji-data

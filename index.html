@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>墨迹写作台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="项目与章节">
+        <div class="brand">
+          <div>
+            <h1>墨迹写作台</h1>
+          </div>
+          <div class="brand-actions">
+            <button class="icon-button" id="homeBtn" title="回到主页" aria-label="回到主页"><span class="ui-icon" data-icon="home"></span></button>
+            <button class="icon-button" id="exportBtn" title="导出全文 TXT" aria-label="导出全文 TXT"><span class="ui-icon" data-icon="download"></span></button>
+          </div>
+        </div>
+
+        <section class="panel project-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="library"></span>小说项目</h2>
+            <button id="newProjectBtn" class="tool-icon-button" type="button" title="新建" aria-label="新建小说"><span class="ui-icon" data-icon="add"></span></button>
+          </div>
+          <label for="projectSelect">当前小说</label>
+          <select id="projectSelect"></select>
+          <div class="project-list" id="projectList"></div>
+          <div class="compact-actions project-actions">
+            <button id="deleteProjectBtn" class="tool-icon-button danger" type="button" title="删除本书" aria-label="删除本书"><span class="ui-icon" data-icon="trash"></span></button>
+          </div>
+        </section>
+
+        <section class="panel project-panel">
+          <label for="projectTitle">作品名</label>
+          <input id="projectTitle" type="text" placeholder="输入小说名" />
+          <label for="genre">类型/基调</label>
+          <input id="genre" type="text" placeholder="如：都市悬疑、群像、轻喜剧" />
+          <label for="targetWords">单章目标字数</label>
+          <input id="targetWords" type="number" min="500" step="500" />
+          <div class="progress-block">
+            <div class="progress-row">
+              <span>当前章进度</span>
+              <strong id="targetProgressText">0%</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="targetProgressFill"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel file-tools">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="folder"></span>文件</h2>
+          </div>
+          <div class="compact-actions">
+            <button id="backupBtn" class="tool-icon-button" type="button" title="备份 JSON" aria-label="备份 JSON"><span class="ui-icon" data-icon="download"></span></button>
+            <button id="importBtn" class="tool-icon-button" type="button" title="导入小说/大纲" aria-label="导入小说或大纲"><span class="ui-icon" data-icon="upload"></span></button>
+          </div>
+          <div class="data-dir-mini">
+            <span id="dataDirText">数据目录：未设置</span>
+            <button id="chooseDataDirBtn" class="tool-icon-button" type="button" title="选择目录" aria-label="选择数据目录"><span class="ui-icon" data-icon="folder"></span></button>
+          </div>
+          <input id="importFile" class="hidden-file" type="file" accept=".txt,.md,.json,text/plain,text/markdown,application/json" />
+        </section>
+
+        <section class="panel outline-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="list"></span>大纲</h2>
+            <div class="compact-actions">
+              <button id="editOutlineBtn" class="tool-icon-button" type="button" title="编辑" aria-label="编辑大纲"><span class="ui-icon" data-icon="edit"></span></button>
+              <button id="importOutlineBtn" class="tool-icon-button" type="button" title="导入大纲到当前小说" aria-label="导入大纲到当前小说"><span class="ui-icon" data-icon="upload"></span></button>
+              <button id="clearOutlineBtn" class="tool-icon-button danger" type="button" title="清理现有大纲" aria-label="清理现有大纲"><span class="ui-icon" data-icon="trash"></span></button>
+            </div>
+          </div>
+          <div class="outline-list" id="outlineList"></div>
+          <input id="importOutlineFile" class="hidden-file" type="file" accept=".txt,.md,.json,text/plain,text/markdown,application/json" />
+        </section>
+
+        <section class="chapter-tools">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="chapters"></span>章节</h2>
+            <button id="addChapterBtn" class="tool-icon-button" type="button" title="新建章节" aria-label="新建章节"><span class="ui-icon" data-icon="add"></span></button>
+          </div>
+          <div class="compact-actions chapter-import-actions">
+            <button id="importChapterBtn" class="tool-icon-button" type="button" title="导入章节 TXT" aria-label="导入章节 TXT"><span class="ui-icon" data-icon="upload"></span></button>
+            <button id="importFolderBtn" class="tool-icon-button" type="button" title="导入章节文件夹" aria-label="导入章节文件夹"><span class="ui-icon" data-icon="folder"></span></button>
+          </div>
+          <div class="volume-editor">
+            <label for="chapterVolume">当前章节分卷</label>
+            <div class="volume-editor-row">
+              <select id="chapterVolume"></select>
+              <button id="applyVolumeBtn" class="tool-icon-button" type="button" title="设置分卷" aria-label="设置分卷"><span class="ui-icon" data-icon="settings"></span></button>
+            </div>
+            <div class="compact-actions volume-actions">
+              <button id="addVolumeBtn" class="tool-icon-button" type="button" title="新建分卷" aria-label="新建分卷"><span class="ui-icon" data-icon="add"></span></button>
+              <button id="deleteVolumeBtn" class="tool-icon-button danger" type="button" title="删除分卷" aria-label="删除分卷"><span class="ui-icon" data-icon="trash"></span></button>
+            </div>
+          </div>
+          <input id="importChapterFile" class="hidden-file" type="file" accept=".txt,text/plain" multiple />
+          <input id="importFolderFile" class="hidden-file" type="file" accept=".txt,text/plain" webkitdirectory multiple />
+          <div class="chapter-list" id="chapterList"></div>
+        </section>
+
+        <section class="panel chapter-summary-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="list"></span>章节摘要</h2>
+            <div class="compact-actions">
+              <button id="saveChapterSummaryBtn" class="tool-icon-button" type="button" title="保存" aria-label="保存章节摘要"><span class="ui-icon" data-icon="save"></span></button>
+              <button id="clearChapterSummaryBtn" class="tool-icon-button danger" type="button" title="清空" aria-label="清空章节摘要"><span class="ui-icon" data-icon="trash"></span></button>
+            </div>
+          </div>
+          <div class="chapter-summary-list" id="chapterSummaryList"></div>
+          <label for="chapterSummaryEditor">当前章节摘要</label>
+          <textarea id="chapterSummaryEditor" rows="7" placeholder="这里查看和编辑当前章节摘要。点击上方“生成摘要”可让 AI 自动整理。"></textarea>
+        </section>
+
+        <section class="panel snapshots-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="camera"></span>章节快照</h2>
+            <button id="snapshotBtn" class="tool-icon-button" type="button" title="保存快照" aria-label="保存快照"><span class="ui-icon" data-icon="save"></span></button>
+          </div>
+          <div class="snapshot-list" id="snapshotList"></div>
+        </section>
+      </aside>
+
+      <main class="home-view" id="homeView" aria-label="主页">
+        <section class="home-hero">
+          <img src="./assets/home-cover.png" alt="墨迹写作台封面" />
+          <div class="home-copy">
+            <h2>管理你的小说宇宙</h2>
+            <p>从一本新小说开始，或导入已经拆好的章节文件夹。所有大纲、伏笔、鼓点、情绪曲线和正文都会按项目隔离保存。</p>
+            <div class="home-actions">
+              <button id="homeNewProjectBtn" class="primary"><span class="ui-icon" data-icon="chapters"></span>新建小说</button>
+              <button id="homeImportFolderBtn"><span class="ui-icon" data-icon="folder"></span>导入章节文件夹</button>
+              <button id="homeImportFileBtn"><span class="ui-icon" data-icon="folder"></span>导入小说/大纲文件</button>
+            </div>
+            <div class="data-store-card">
+              <div>
+                <strong>工作数据目录</strong>
+                <span id="homeDataDirText">尚未设置，便携版需要先选择一个目录保存所有数据。</span>
+              </div>
+              <button id="homeChooseDataDirBtn" type="button"><span class="ui-icon" data-icon="folder"></span>选择目录</button>
+            </div>
+            <div class="home-picker">
+              <label for="homeProjectSelect">选择现有小说</label>
+              <div class="home-picker-row">
+                <select id="homeProjectSelect"></select>
+                <button id="openHomeProjectBtn"><span class="ui-icon" data-icon="open"></span>打开</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="home-projects">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="library"></span>最近创作</h2>
+          </div>
+          <div class="recent-grid" id="recentProjectList"></div>
+        </section>
+      </main>
+
+      <main class="workspace">
+        <header class="editor-header">
+          <div>
+            <input id="chapterTitle" class="chapter-title" type="text" />
+            <div class="chapter-meta" id="chapterMeta">已自动保存</div>
+          </div>
+          <div class="quick-actions">
+            <button class="icon-button" id="toggleLeftPanelBtn" title="收起/展开左侧栏" aria-label="收起或展开左侧栏"><span class="ui-icon" data-icon="sidebarLeft"></span></button>
+            <button class="icon-button" id="toggleRightPanelBtn" title="收起/展开右侧栏" aria-label="收起或展开右侧栏"><span class="ui-icon" data-icon="sidebarRight"></span></button>
+            <button class="icon-button" id="toggleFindBtn" title="搜索/替换" aria-label="搜索替换"><span class="ui-icon" data-icon="search"></span></button>
+            <button id="splitSelectionBtn" class="icon-button" type="button" title="选区拆章" aria-label="选区拆章"><span class="ui-icon" data-icon="split"></span></button>
+            <button id="splitSuggestBtn" class="icon-button" type="button" title="分章建议" aria-label="分章建议"><span class="ui-icon" data-icon="thread"></span></button>
+            <button id="sceneCardBtn" class="icon-button" type="button" title="生成摘要" aria-label="生成摘要"><span class="ui-icon" data-icon="card"></span></button>
+            <button class="icon-button danger" id="deleteChapterBtn" type="button" title="删除章节" aria-label="删除章节"><span class="ui-icon" data-icon="trash"></span></button>
+          </div>
+        </header>
+
+        <section class="find-bar" id="findBar" aria-label="搜索替换">
+          <div class="find-input-row">
+            <input id="findInput" type="text" placeholder="搜索正文" />
+            <input id="replaceInput" type="text" placeholder="替换为" />
+          </div>
+          <div class="find-tool-row">
+            <button id="findPrevBtn" class="tool-icon-button" type="button" title="上一个" aria-label="上一个匹配"><span class="ui-icon" data-icon="arrowLeft"></span></button>
+            <button id="findNextBtn" class="tool-icon-button" type="button" title="下一个" aria-label="下一个匹配"><span class="ui-icon" data-icon="arrowRight"></span></button>
+            <button id="replaceOneBtn" class="tool-icon-button" type="button" title="替换" aria-label="替换当前匹配"><span class="ui-icon" data-icon="replace"></span></button>
+            <button id="replaceAllBtn" class="tool-icon-button" type="button" title="替换全部" aria-label="替换全部匹配"><span class="ui-icon" data-icon="replaceAll"></span></button>
+            <span id="findStatus">0/0</span>
+          </div>
+        </section>
+
+        <div class="editor-wrap" id="editorWrap">
+          <button class="bookmark-jump tool-icon-button" id="bookmarkJumpBtn" type="button" title="跳到下一个书签" aria-label="跳到下一个书签"><span class="ui-icon" data-icon="bookmark"></span></button>
+          <div class="line-gutter" id="lineGutter" aria-label="正文行号"></div>
+          <div class="editor-stack">
+            <div class="editor-highlights" id="editorHighlights" aria-hidden="true"></div>
+            <textarea
+              id="editor"
+              spellcheck="false"
+              placeholder="从这里开始写正文。选中一段文字后，底部会显示选区字数；需要切章时，点“选区拆章”即可把选中内容移到新章节。"
+            ></textarea>
+          </div>
+        </div>
+
+        <footer class="status-bar" aria-live="polite">
+          <span id="saveStatus">已保存</span>
+          <span>当前章 <strong id="chapterWordCount">0</strong> 字</span>
+          <span>选区 <strong id="selectionWordCount">0</strong> 字</span>
+          <span>全书 <strong id="totalWordCount">0</strong> 字</span>
+          <span>进度 <strong id="targetProgressFooter">0%</strong></span>
+        </footer>
+      </main>
+
+      <div class="right-resizer" id="rightResizer" title="拖动调整右侧宽度" aria-hidden="true"></div>
+      <aside class="assistant-panel" aria-label="AI 与剧情工具">
+        <section class="panel ai-settings">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="bot"></span>AI 服务</h2>
+            <button id="testAiBtn" class="tool-icon-button" type="button" title="测试 AI 服务" aria-label="测试 AI 服务"><span class="ui-icon" data-icon="pulse"></span></button>
+          </div>
+          <label for="aiProfileSelect">配置档案</label>
+          <select id="aiProfileSelect"></select>
+          <label for="aiProfileName">配置名称</label>
+          <input id="aiProfileName" type="text" placeholder="例如：OpenAI 主力、DeepSeek 草稿" />
+          <div class="compact-actions ai-profile-actions">
+            <button id="newAiProfileBtn" class="tool-icon-button" type="button" title="新建" aria-label="新建 AI 配置"><span class="ui-icon" data-icon="add"></span></button>
+            <button id="saveAiProfileBtn" class="tool-icon-button" type="button" title="保存" aria-label="保存 AI 配置"><span class="ui-icon" data-icon="save"></span></button>
+            <button id="deleteAiProfileBtn" class="tool-icon-button danger" type="button" title="删除" aria-label="删除 AI 配置"><span class="ui-icon" data-icon="trash"></span></button>
+          </div>
+          <label for="providerPreset">服务商模板</label>
+          <select id="providerPreset">
+            <option value="custom">OpenAI 兼容接口</option>
+            <option value="openai">OpenAI</option>
+            <option value="deepseek">DeepSeek</option>
+            <option value="qwen">通义千问</option>
+            <option value="moonshot">Moonshot</option>
+            <option value="zhipu">智谱 GLM</option>
+          </select>
+          <label for="baseUrl">接口地址</label>
+          <input id="baseUrl" type="text" placeholder="https://api.example.com/v1" />
+          <label for="modelName">模型</label>
+          <input id="modelName" type="text" placeholder="如：gpt-4.1、deepseek-chat" />
+          <label for="apiKey">API Key</label>
+          <input id="apiKey" type="password" placeholder="仅保存在本机浏览器" />
+          <label for="aiSystemPrompt">AI 辅助身份</label>
+          <textarea id="aiSystemPrompt" rows="3" placeholder="例如：你是专业中文小说创作助手，回答要具体、可落地。"></textarea>
+          <label for="aiTemperature">模型温度</label>
+          <div class="temperature-row">
+            <input id="aiTemperature" type="range" min="0" max="2" step="0.05" value="0.85" />
+            <input id="aiTemperatureNumber" type="number" min="0" max="2" step="0.05" value="0.85" aria-label="模型温度数值" />
+          </div>
+        </section>
+
+        <section class="panel editor-preferences">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="wand"></span>阅读样式</h2>
+          </div>
+          <label for="editorFontSelect">正文字体</label>
+          <select id="editorFontSelect"></select>
+          <div class="compact-actions">
+            <button id="chooseFontFolderBtn" class="tool-icon-button" type="button" title="导入字体文件夹" aria-label="导入字体文件夹"><span class="ui-icon" data-icon="upload"></span></button>
+            <button id="resetEditorStyleBtn" class="tool-icon-button" type="button" title="恢复默认" aria-label="恢复默认阅读样式"><span class="ui-icon" data-icon="reset"></span></button>
+          </div>
+          <input id="fontFolderInput" class="hidden-file" type="file" accept=".ttf,.ttc,.otf,.woff,.woff2,font/*" webkitdirectory multiple />
+          <div class="color-row">
+            <label for="editorTextColor">字体颜色</label>
+            <input id="editorTextColor" type="color" value="#20231f" />
+          </div>
+          <div class="color-row">
+            <label for="editorBgColor">阅读背景</label>
+            <input id="editorBgColor" type="color" value="#ffffff" />
+          </div>
+        </section>
+
+        <section class="panel story-control">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="route"></span>剧情控制</h2>
+            <button id="saveStoryBtn" class="tool-icon-button" type="button" title="保存" aria-label="保存"><span class="ui-icon" data-icon="save"></span></button>
+          </div>
+          <div class="field-label"><label for="mainLine">主线</label><button class="field-ai-btn tool-icon-button" data-setting-ai="mainLine" type="button" title="AI 写" aria-label="AI 写主线"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="mainLine" rows="3" placeholder="主角目标、核心冲突、最终走向"></textarea>
+          <div class="field-label"><label for="branchLines">支线</label><button class="field-ai-btn tool-icon-button" data-setting-ai="branchLines" type="button" title="AI 写" aria-label="AI 写支线"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="branchLines" rows="3" placeholder="感情线、事业线、反派线等"></textarea>
+          <div class="field-label"><label for="foreshadows">伏笔</label><button class="field-ai-btn tool-icon-button" data-setting-ai="foreshadows" type="button" title="AI 写" aria-label="AI 写伏笔"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="foreshadows" rows="3" placeholder="埋下的线索、回收位置、误导信息"></textarea>
+          <div class="field-label"><label for="characters">人物状态</label><button class="field-ai-btn tool-icon-button" data-setting-ai="characters" type="button" title="AI 写" aria-label="AI 写人物状态"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="characters" rows="3" placeholder="人物欲望、秘密、关系变化"></textarea>
+          <div class="field-label"><label for="roleCards">角色卡</label><button class="field-ai-btn tool-icon-button" data-setting-ai="roleCards" type="button" title="AI 写" aria-label="AI 写角色卡"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="roleCards" rows="3" placeholder="姓名、身份、目标、弱点、口癖、关系网"></textarea>
+          <div class="field-label"><label for="props">道具</label><button class="field-ai-btn tool-icon-button" data-setting-ai="props" type="button" title="AI 写" aria-label="AI 写道具"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="props" rows="3" placeholder="关键物品、能力、限制、归属、出场章节"></textarea>
+          <div class="field-label"><label for="worldBackground">世界背景</label><button class="field-ai-btn tool-icon-button" data-setting-ai="worldBackground" type="button" title="AI 写" aria-label="AI 写世界背景"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="worldBackground" rows="3" placeholder="时代、地理、势力、规则、社会结构"></textarea>
+          <div class="field-label"><label for="keySettings">重要设定</label><button class="field-ai-btn tool-icon-button" data-setting-ai="keySettings" type="button" title="AI 写" aria-label="AI 写重要设定"><span class="ui-icon" data-icon="spark"></span></button></div>
+          <textarea id="keySettings" rows="3" placeholder="不能违背的硬设定、谜底、系统规则、禁忌"></textarea>
+        </section>
+
+        <section class="panel board-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="board"></span>创作看板</h2>
+            <div class="compact-actions">
+              <button id="boardAiBtn" class="tool-icon-button" type="button" title="AI 写" aria-label="AI 写创作看板"><span class="ui-icon" data-icon="spark"></span></button>
+              <button id="saveBoardBtn" class="tool-icon-button" type="button" title="保存" aria-label="保存创作看板"><span class="ui-icon" data-icon="save"></span></button>
+            </div>
+          </div>
+          <div class="tab-row" role="tablist" aria-label="创作看板">
+            <button class="board-tab active" data-board="outline" role="tab">总纲</button>
+            <button class="board-tab" data-board="volumeOutline" role="tab">卷纲</button>
+            <button class="board-tab" data-board="chapterOutline" role="tab">章纲</button>
+            <button class="board-tab" data-board="timeline" role="tab">时间线</button>
+            <button class="board-tab" data-board="foreshadowLedger" role="tab">伏笔表</button>
+            <button class="board-tab" data-board="beatPlan" role="tab">鼓点</button>
+            <button class="board-tab" data-board="emotionPlan" role="tab">情绪</button>
+            <button class="board-tab" data-board="characterArc" role="tab">人物弧</button>
+            <button class="board-tab" data-board="sceneCards" role="tab">场景卡</button>
+            <button class="board-tab" data-board="notes" role="tab">灵感</button>
+          </div>
+          <textarea id="boardText" rows="7" placeholder="把这一类资料集中记在这里。"></textarea>
+        </section>
+
+        <section class="panel ai-actions">
+          <h2><span class="ui-icon" data-icon="spark"></span>AI 辅助</h2>
+          <div class="action-grid">
+            <button data-action="continue"><span class="ui-icon" data-icon="pen"></span>续写</button>
+            <button data-action="outline"><span class="ui-icon" data-icon="list"></span>大纲</button>
+            <button data-action="foreshadow"><span class="ui-icon" data-icon="pin"></span>伏笔设计</button>
+            <button data-action="beat"><span class="ui-icon" data-icon="pulse"></span>鼓点起伏</button>
+            <button data-action="emotion"><span class="ui-icon" data-icon="wave"></span>情绪曲线</button>
+            <button data-action="thread"><span class="ui-icon" data-icon="thread"></span>主支线检查</button>
+            <button data-action="correct"><span class="ui-icon" data-icon="check"></span>剧情纠偏</button>
+            <button data-action="outlineBackfill"><span class="ui-icon" data-icon="thread"></span>纲要反推</button>
+            <button data-action="polish"><span class="ui-icon" data-icon="wand"></span>润色所选</button>
+          </div>
+          <label for="writingRequirementPreset">写作要求</label>
+          <select id="writingRequirementPreset">
+            <option value="easyUrban">轻松都市白描</option>
+            <option value="custom">自定义</option>
+          </select>
+          <textarea id="writingRequirements" rows="8" placeholder="输入本次 AI 辅助需要遵守的文风、段落、人物、笑点泪点等要求。"></textarea>
+          <label for="aiInstruction">补充要求</label>
+          <textarea id="aiInstruction" rows="4" placeholder="例如：保持克制，别太网文腔；下一场需要反转。"></textarea>
+          <button class="primary tool-icon-button" id="runAiBtn" type="button" title="打开当前 AI 任务" aria-label="打开当前 AI 任务"><span class="ui-icon" data-icon="play"></span></button>
+        </section>
+
+        <section class="panel result-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="result"></span>结果</h2>
+            <div class="compact-actions">
+              <button id="stopAiBtn" type="button" class="tool-icon-button danger" title="停止输出" aria-label="停止输出" disabled><span class="ui-icon" data-icon="stop"></span></button>
+              <button id="copyResultBtn" class="tool-icon-button" type="button" title="复制" aria-label="复制结果"><span class="ui-icon" data-icon="copy"></span></button>
+              <button id="insertResultBtn" class="tool-icon-button" type="button" title="插入正文" aria-label="插入正文"><span class="ui-icon" data-icon="insert"></span></button>
+            </div>
+          </div>
+          <div id="aiProgress" class="ai-progress">等待 AI 任务</div>
+          <div id="aiResult" class="ai-result">AI 结果会显示在这里。未配置 API 时，工具会先生成提示词，方便你复制到任意模型。</div>
+        </section>
+
+        <section class="panel chat-panel">
+          <div class="section-title">
+            <h2><span class="ui-icon" data-icon="spark"></span>AI 对话</h2>
+            <button id="clearChatBtn" class="tool-icon-button" type="button" title="清空" aria-label="清空对话"><span class="ui-icon" data-icon="trash"></span></button>
+          </div>
+          <label for="chatProfileSelect">对话配置</label>
+          <select id="chatProfileSelect"></select>
+          <label class="inline-toggle">
+            <input id="chatUseSystemPrompt" type="checkbox" />
+            <span>使用系统提示词</span>
+          </label>
+          <textarea id="chatSystemPrompt" rows="3" placeholder="系统提示词：例如让 AI 保持某种写作风格、身份或约束"></textarea>
+          <div id="chatMessages" class="chat-messages">还没有对话。</div>
+          <label for="chatInput">输入消息</label>
+          <textarea id="chatInput" rows="3" placeholder="向 AI 提问，或让它基于当前章节继续讨论"></textarea>
+          <div class="compact-actions">
+            <button id="sendChatBtn" type="button" class="primary tool-icon-button" title="发送" aria-label="发送对话"><span class="ui-icon" data-icon="send"></span></button>
+            <button id="stopChatBtn" type="button" class="tool-icon-button danger" title="停止输出" aria-label="停止对话输出" disabled><span class="ui-icon" data-icon="stop"></span></button>
+            <button id="copyChatBtn" class="tool-icon-button" type="button" title="复制对话" aria-label="复制对话"><span class="ui-icon" data-icon="copy"></span></button>
+          </div>
+          <div id="chatProgress" class="ai-progress">等待对话</div>
+        </section>
+      </aside>
+    </div>
+
+    <dialog class="ai-dialog" id="aiTaskDialog" aria-labelledby="aiDialogTitle">
+      <form method="dialog" class="dialog-card">
+        <header class="dialog-header">
+          <div>
+            <h2 id="aiDialogTitle">AI 任务</h2>
+            <p id="aiDialogDesc">填写要求后运行，未配置 API 时会生成可复制提示词。</p>
+            <p id="aiReferenceHint" class="reference-hint">会自动带入本任务需要参考的资料。</p>
+          </div>
+          <button class="icon-button" id="closeAiDialogBtn" value="cancel" title="关闭" aria-label="关闭"><span class="ui-icon" data-icon="x"></span></button>
+        </header>
+
+        <div class="dialog-grid">
+          <section>
+            <label for="aiTaskScope">作用范围</label>
+            <select id="aiTaskScope">
+              <option value="auto">自动：优先选区，否则当前章</option>
+              <option value="selection">仅当前选区</option>
+              <option value="chapter">当前章节</option>
+              <option value="book">全书章节摘要</option>
+              <option value="context">只使用设定与看板</option>
+            </select>
+
+            <label for="aiTaskInstruction">这次想让 AI 怎么做</label>
+            <textarea id="aiTaskInstruction" rows="8"></textarea>
+
+            <div class="reference-picker">
+              <div class="reference-picker-head">
+                <span>Optional references</span>
+                <div>
+                  <button type="button" id="selectAllRefsBtn" class="tool-icon-button" title="全选参考" aria-label="全选参考"><span class="ui-icon" data-icon="check"></span></button>
+                  <button type="button" id="clearRefsBtn" class="tool-icon-button" title="清空参考" aria-label="清空参考"><span class="ui-icon" data-icon="trash"></span></button>
+                </div>
+              </div>
+              <div class="reference-options" id="referenceOptions"></div>
+            </div>
+
+            <div class="compact-actions dialog-actions">
+              <button type="button" id="previewPromptBtn" class="tool-icon-button" title="预览提示词" aria-label="预览提示词"><span class="ui-icon" data-icon="search"></span></button>
+              <button type="button" id="runDialogAiBtn" class="primary tool-icon-button" title="运行 / 生成" aria-label="运行或生成"><span class="ui-icon" data-icon="play"></span></button>
+            </div>
+          </section>
+
+          <section>
+            <label for="promptPreview">提示词预览</label>
+            <textarea id="promptPreview" rows="13"></textarea>
+          </section>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="context-menu" id="contextMenu" hidden></div>
+    <dialog class="rename-dialog" id="renameDialog" aria-labelledby="renameDialogTitle">
+      <form method="dialog" class="rename-card">
+        <h2 id="renameDialogTitle">重命名</h2>
+        <input id="renameInput" type="text" />
+        <div class="compact-actions">
+          <button id="cancelRenameBtn" class="tool-icon-button" value="cancel" title="取消" aria-label="取消"><span class="ui-icon" data-icon="x"></span></button>
+          <button id="confirmRenameBtn" type="button" class="primary tool-icon-button" title="确定" aria-label="确定"><span class="ui-icon" data-icon="check"></span></button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./web-storage.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
